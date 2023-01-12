@@ -11,10 +11,10 @@ Ansible playbook to create postgres HA golden image(template VM) for Nutanix NDB
 ├── ansible.cfg
 ├── group_vars
 │   └── all
-│       ├── private.yml
-│       └── public.yml
+│       ├── private.yml # private variables (credential)
+│       └── public.yml  # variables
 ├── host_vars
-├── inventory
+├── inventory    # host IPs
 ├── ndb-playbook.yml
 └── roles
     └── postgres_ha
