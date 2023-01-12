@@ -1,6 +1,6 @@
 # nutanix-ndb-playbook
 
-Ansible playbook to create postgres HA golden image for Nutanix NDB
+Ansible playbook to create postgres HA golden image(template VM) for Nutanix NDB
 
 ## Directory Structure
 
