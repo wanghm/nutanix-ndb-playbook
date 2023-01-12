@@ -27,7 +27,17 @@ Ansible playbook to create postgres HA golden image for Nutanix NDB
         └── templates
 ```
 
-## Prepare private.yml
+## Prepare group_vars/public.yml
+
+```
+postgressql_src_url: https://ftp.postgresql.org/pub/source/v14.6/postgresql-14.6.tar.gz
+postgressql_src_ver: postgresql-14.6
+src_dir: /usr/local/src
+postgres_dir: /usr/pgsql-14/
+```
+
+
+## Prepare group_vars/private.yml
 ```
 ansible_connection: ssh 
 ansible_ssh_user: xxxxxxxx
