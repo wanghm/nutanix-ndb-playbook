@@ -55,7 +55,7 @@
   command: chdir={{ src_dir }} tar xzvf "{{ postgressql_src_ver }}.tar.gz"
 
 - name: comfigure postgresql
-  command: chdir={{src_dir}}/{{postgressql_src_ver}} ./configure
+  command: chdir={{src_dir}}/{{postgressql_src_ver}} ./configure --prefix={{ postgres_dir }}
 
 - name: make postgresql
   command: chdir={{src_dir}}/{{postgressql_src_ver}} make
