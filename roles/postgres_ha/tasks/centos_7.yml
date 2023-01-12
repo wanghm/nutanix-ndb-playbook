@@ -1,3 +1,6 @@
+---
+# roles/postgres_ha/tasks/centos_7.yml
+
 - name: yum update
   yum:
     name: '*'
@@ -43,4 +46,77 @@
       - zlib-devel
       - rpcbind
       - showmount
+    state: latest
+  
+- name: Install HAProxy
+  yum:
+    name: ["haproxy*1.5*"]
+    state: present
+
+- name: Install upgrade setuptools
+  command: "python3 -m pip install -U setuptools"
+  ignore_errors: true
+
+- name: Install Patroni Dependencies
+  pip:
+    name:
+      - urllib3==1.24.2
+      - psycopg2-binary==2.8.6
+    state: present
+
+- name: Install Patroni
+  pip:
+    name: patroni[etcd]==2.1.1
+    state: present
+
+- name: create symbolic link for patroni
+  file:
+    src: /usr/local/bin/patroni
+    dest: /usr/bin/patroni
+    state: link
+- name: create symbolic link for patronictl
+  file:
+    src: /usr/local/bin/patronictl
+    dest: /usr/bin/patronictl
+    state: link
+
+- name: Show patroni Info
+  command: "python3 -m pip show patroni"
+  register: patroni_info
+  ignore_errors: true
+- debug: msg="{{ patroni_info.stdout_lines }}"
+
+- name: etcd installation
+  pip:
+    name: etcd3==0.10.0
+    state: present
+
+- name: etcd installation by yum
+  yum:
+    name: etcd-3.3.11
+    state: present
+
+- name: check etcd version 
+  command: "etcd --version"
+  register: etcd_version
+- debug: msg="{{ etcd_version.stdout_lines }}"
+
+- name: Start service iptables if not started
+  service:
+    name: iptables
+    state: started
+
+- name: Install Keepalived
+  yum:
+    name: keepalived
+    state: latest
+
+- name: check keepalived version 
+  command: "keepalived --version"
+  register: keepalived_version
+- debug: msg="{{ keepalived_version.stdout_lines }}"
+
+- name: Install Firewalld
+  yum:
+    name: firewalld
     state: latest

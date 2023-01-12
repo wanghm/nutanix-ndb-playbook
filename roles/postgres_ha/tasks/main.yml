@@ -1,5 +1,6 @@
 ---
-# roles/common/main.yml
+# roles/postgres_ha/tasks/main.yml
+
 - name: Create postgres group
   group:
     name: postgres
