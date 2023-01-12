@@ -26,3 +26,22 @@ Ansible playbook to create postgres HA golden image for Nutanix NDB
         │   └── main.yml
         └── templates
 ```
+
+## Prepare private.yml
+```
+ansible_connection: ssh 
+ansible_ssh_user: xxxxxxxx
+ansible_ssh_pass: "xxxxxxxxxx"
+```
+You can encrypt it by ansible-vault:
+
+```ansible-vault encrypt group_vars/private.yml```
+
+
+## Run playbook
+
+``` ansible-playbook -i inventory ndb-playbook.yml```
+
+or
+
+``` ansible-playbook -i inventory ndb-playbook.yml --ask-vault-pass```

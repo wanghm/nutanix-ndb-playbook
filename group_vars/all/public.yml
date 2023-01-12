@@ -18,3 +18,8 @@ os_minimum_versions:
 #  Ubuntu: 18.04
 #  Debian: 10
 #  AlmaLinux: 8.3
+
+postgressql_src_url: https://ftp.postgresql.org/pub/source/v14.6/postgresql-14.6.tar.gz
+postgressql_src_ver: postgresql-14.6
+src_dir: /usr/local/src
+postgres_dir: /usr/pgsql-14/
