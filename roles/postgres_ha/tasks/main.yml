@@ -1,17 +1,27 @@
 ---
 # roles/common/main.yml
-- name: add OS users
+- name: Create postgres group
+  group:
+    name: postgres
+    state: present
+- name: add OS user postgres
   user:
     name: postgres
     home: /home/postgres
-    group: postgres
+    groups: postgres
+    state: present
 
+- name: Create era group
+  group:
+    name: era
+    state: present
 - name: add OS era
   user:
     name: era
     home: /home/era
-    group: era
-
+    groups: era
+    state: present
+  
 - name: enable passwordless sudo for era
   copy:
     content: 'era ALL=(ALL:ALL) NOPASSWD:ALL'
@@ -21,7 +31,7 @@
 - name: Disabling SELinux state
   selinux:
     state: disabled
-    register: selinuxdisabled
+  register: selinuxdisabled
 - name: Print the changes in Configurtion file 
   command: grep SELINUX /etc/sysconfig/selinux
   register: sevalue
@@ -29,7 +39,7 @@
     var: sevalue.stdout_lines
 
 # centos7 specific tasks
-- include: centos7.yml
+- include: centos_7.yml
   when:
    - ansible_distribution == "CentOS"
    - ansible_distribution_major_version == "7"

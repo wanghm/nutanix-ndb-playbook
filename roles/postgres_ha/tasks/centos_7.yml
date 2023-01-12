@@ -1,24 +1,12 @@
-- name: add the /etc/yum.repos.d/epel.repo
-  yum_repository:
-    name: epel
-    description: EPEL repo
-    baseurl: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-
 - name: yum update
   yum:
     name: '*'
     state: latest
-  async: 1000
-  poll: 1
-  register: yum_sleeper
 
-- name: yum check on fire and forget task
-  async_status:
-    jid: "{{ yum_sleeper.ansible_job_id }}"
-  register: job_result
-  until: job_result.finished
-  retries: 30
-  delay: 10
+- name: add the /etc/yum.repos.d/epel.repo
+  yum:
+    name: epel-release
+    state: present
 
 - name: install python36, python3-devel
   yum:
