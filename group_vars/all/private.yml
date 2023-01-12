@@ -1,0 +1,5 @@
+---
+# need encryption, and add to .gitignore
+ansible_connection: ssh 
+ansible_ssh_user: root
+ansible_ssh_pass: "nutanix/4u"
