@@ -25,7 +25,8 @@ Ansible playbook to create postgres HA golden image(template VM) for Nutanix NDB
         └── templates
 ```
 
-## Prepare group_vars/public.yml
+## How to use this playbook
+### 1. Prepare group_vars/public.yml
 
 ```
 postgressql_src_url: https://ftp.postgresql.org/pub/source/v14.6/postgresql-14.6.tar.gz
@@ -34,23 +35,24 @@ src_dir: /usr/local/src
 postgres_dir: /usr/pgsql-14/
 ```
 
-## Prepare group_vars/private.yml
+### 2. Prepare group_vars/private.yml
 ```
 ansible_connection: ssh 
 ansible_ssh_user: xxxxxxxx
 ansible_ssh_pass: "xxxxxxxxxx"
 era_user_password: "$1$wIxxxxxxxxxxxxxxxxxxxxxxxx/1"
----
-get encrypt era_user_password by:
-openssl passwd -1 "mypassword"
-and set it in this file
+
+########
+# get encrypt era_user_password by:
+# openssl passwd -1 "mypassword"
+# and set it in this file
 ```
 You can encrypt it by ansible-vault:
 
 ```ansible-vault encrypt group_vars/private.yml```
 
 
-## Run playbook
+### 3.Run playbook
 
 ``` ansible-playbook -i inventory ndb-playbook.yml```
 
