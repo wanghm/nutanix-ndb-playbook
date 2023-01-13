@@ -34,12 +34,16 @@ src_dir: /usr/local/src
 postgres_dir: /usr/pgsql-14/
 ```
 
-
 ## Prepare group_vars/private.yml
 ```
 ansible_connection: ssh 
 ansible_ssh_user: xxxxxxxx
 ansible_ssh_pass: "xxxxxxxxxx"
+era_user_password: "$1$wIxxxxxxxxxxxxxxxxxxxxxxxx/1"
+---
+get encrypt era_user_password by:
+openssl passwd -1 "mypassword"
+and set it in this file
 ```
 You can encrypt it by ansible-vault:
 
