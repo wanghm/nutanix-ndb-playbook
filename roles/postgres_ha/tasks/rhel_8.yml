@@ -1,4 +1,14 @@
 ---
 # roles/postgres_ha/tasks/rhel_8.yml
-# Use DVD repository to install packages
+
+# Prepare DVD repository: need to attach rhel8 ISO to the CDROM at first
+
+- name: mount rhel8 CDROM
+  command: "mount -t iso9660 -o ro /dev/cdrom /mnt"
+
+- name: copy rhel8 repo file
+  copy:
+    src: ../files/rhel8.repo
+    dst: /etc/yum.repos.d/rhel8.repo
+    mode: 0644
 
