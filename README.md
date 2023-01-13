@@ -58,6 +58,6 @@ You can encrypt this file by ansible-vault:
 
 ``` ansible-playbook -i inventory ndb-playbook.yml```
 
-or (encase of using encrypt private.yml file)
+or (in case of using encrypt private.yml file)
 
 ``` ansible-playbook -i inventory ndb-playbook.yml --ask-vault-pass```
