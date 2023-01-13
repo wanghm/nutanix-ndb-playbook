@@ -35,13 +35,13 @@
     mode: 0440
 
 # rhel7/centos7 specific tasks
-- include: centos_7.yml
+- include: centos7.yml
   when:
    - ansible_distribution in ["RedHat","CentOS"]
    - ansible_distribution_major_version == "7"
 
 # rhel8 soecific tasks
-- include: rhel_8.yml
+- include: rhel8.yml
   when:
    - ansible_distribution == "RedHat"
    - ansible_distribution_major_version == "8"
