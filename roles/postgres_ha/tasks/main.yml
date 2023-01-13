@@ -34,11 +34,17 @@
     dest: /etc/sudoers.d/era_nopasswd
     mode: 0440
 
-# centos7 specific tasks
+# rhel7/centos7 specific tasks
 - include: centos_7.yml
   when:
-   - ansible_distribution == "CentOS"
+   - ansible_distribution in ["RedHat","CentOS"]
    - ansible_distribution_major_version == "7"
+
+# rhel8 soecific tasks
+- include: rhel_8.yml
+  when:
+   - ansible_distribution == "RedHat"
+   - ansible_distribution_major_version == "8"
 
 # Install postgresql from source
 - name: download postgresql packages

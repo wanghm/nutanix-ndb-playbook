@@ -1,0 +1,11 @@
+[rhel8-BaseOS]
+name=rhel8 - BaseOS
+baseurl=file:///mnt/BaseOS
+enabled=1
+gpgcheck=0
+ 
+[rhel8-AppStream]
+name=rhel8 - AppStream
+baseurl=file:///mnt/AppStream
+enabled=1
+gpgcheck=0

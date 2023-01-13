@@ -1,0 +1,4 @@
+---
+# roles/postgres_ha/tasks/rhel_8.yml
+# Use DVD repository to install packages
+
