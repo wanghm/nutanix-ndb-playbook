@@ -10,6 +10,7 @@
 - name: Create OS user postgres
   user:
     name: postgres
+    password: "{{ postgres_user_password }}"
     home: /home/postgres
     group: postgres
     state: present
@@ -23,8 +24,8 @@
   user:
     name: era
     password: "{{ era_user_password }}"
-    group: era
     home: /home/era
+    group: era
     state: present
 
 - name: Enable passwordless sudo for era

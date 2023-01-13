@@ -43,9 +43,10 @@ ansible_connection: ssh
 ansible_ssh_user: xxxxxxxx
 ansible_ssh_pass: "xxxxxxxxxx"
 era_user_password: "$1$wIxxxxxxxxxxxxxxxxxxxxxxxx/1"
+postgres_user_password: "$2wIxxxxxxxxxxxxxxxxxxxxxxxxyy"
 
 ########
-# get encrypt era_user_password by:
+# get encrypt era_user_password and postgres_user_password by:
 # openssl passwd -1 "mypassword"
 # and set it in this file
 ```
