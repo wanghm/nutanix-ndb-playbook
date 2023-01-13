@@ -20,14 +20,28 @@
 
 - name: pip3 install
   yum:
-    name: ["python3-pip", "python3-setuptools"]
+    name: python3-pip
     state: latest
 
-- name: Install and upgrade pip3
-  pip:
-    name: pip
-    executable: pip3
-    state: latest
+- name: Update setuptools package
+  command: "python3 -m pip install setuptools"
+#  pip:
+#    name: setuptools
+#    state: latest
+#    executable: python3 -m pip
+
+- name: Upgrade pip package
+  command: "python3 -m pip install --upgrade pip"
+#  pip:
+#    name: pip
+#    state: latest
+#    executable: python3 -m pip
+#    version: latest
+
+- name: show python3 pip version
+  command: "python3 -m pip --version"
+  register: pip3_info
+- debug: msg="{{ pip3_info.stdout_lines }}"
 
 - name: Install dependency packages
   yum:
@@ -57,17 +71,25 @@
 #  command: "python3 -m pip install -U setuptools"
 #  ignore_errors: true
 
-- name: Install Patroni Dependencies
-  pip:
-    name:
-      - urllib3==1.24.2
-      - psycopg2-binary==2.8.6
-    state: present
+- name: Install Patroni Dependencies1
+  command: "python3 -m pip install urllib3==1.24.2"
+  
+- name: Install Patroni Dependencies2
+  command: "python3 -m pip install psycopg2-binary==2.8.6"
+
+#  pip:
+#    name:
+#      - urllib3==1.24.2
+#      - psycopg2-binary==2.8.6
+#    executable: pip3
+#    state: present
 
 - name: Install Patroni
-  pip:
-    name: patroni[etcd]==2.1.1
-    state: present
+  command: "python3 -m pip install patroni[etcd]==2.1.1"
+#  pip:
+#    name: patroni[etcd]==2.1.1
+#    executable: pip3
+#    state: present
 
 - name: create symbolic link for patroni
   file:
@@ -81,15 +103,22 @@
     state: link
 
 - name: Show patroni Info
-  command: "python3 -m pip show patroni"
+  command: python3 -m pip show patroni
   register: patroni_info
   ignore_errors: true
 - debug: msg="{{ patroni_info.stdout_lines }}"
 
 - name: etcd installation
-  pip:
-    name: etcd3==0.10.0
-    state: present
+  command: "python3 -m pip install etcd3==0.10.0"
+
+- name: show etcd3
+  command: "python3 -m pip show etcd3"
+  register: etcd3_info
+- debug: msg="{{ etcd3_info.stdout_lines }}"
+#  pip:
+#    name: etcd3==0.10.0
+#    executable: pip3
+#    state: present
 
 - name: etcd installation by yum
   yum:

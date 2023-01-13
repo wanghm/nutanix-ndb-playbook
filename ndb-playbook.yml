@@ -1,5 +1,5 @@
 ---
-- name: NDB setup
+- name: NDB postgres HA template VM setup
   hosts: all
 #  remote_user: root
 #  become: true
