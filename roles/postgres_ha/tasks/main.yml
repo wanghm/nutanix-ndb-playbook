@@ -5,7 +5,7 @@
   group:
     name: postgres
     state: present
-- name: add OS user postgres
+- name: Create OS user postgres
   user:
     name: postgres
     home: /home/postgres
@@ -16,28 +16,18 @@
   group:
     name: era
     state: present
-- name: add OS era
+- name: Create OS user era
   user:
     name: era
     home: /home/era
     groups: era
     state: present
   
-- name: enable passwordless sudo for era
+- name: Enable passwordless sudo for era
   copy:
     content: 'era ALL=(ALL:ALL) NOPASSWD:ALL'
     dest: /etc/sudoers.d/era_nopasswd
     mode: 0440
-
-- name: Disabling SELinux state
-  selinux:
-    state: disabled
-  register: selinuxdisabled
-- name: Print the changes in Configurtion file 
-  command: grep SELINUX /etc/sysconfig/selinux
-  register: sevalue
-- debug:
-    var: sevalue.stdout_lines
 
 # centos7 specific tasks
 - include: centos_7.yml
@@ -71,6 +61,15 @@
 
 - name: make install-world postgresql
   command: chdir={{src_dir}}/{{postgressql_src_ver}} make install-world
+
+- name: Disabling seLinux state
+  command: 'sed -i -e "s/^SELINUX=.*/SELINUX=disabled/g" /etc/sysconfig/selinux'
+
+- name: Print the changes in seLinux Configurtion file 
+  command: grep SELINUX /etc/sysconfig/selinux
+  register: sevalue
+- debug:
+    var: sevalue.stdout_lines
 
 
 
