@@ -18,9 +18,7 @@ Ansible playbook to create postgres HA golden image(template VM) for Nutanix NDB
 ├── ndb-playbook.yml
 └── roles
     └── postgres_ha
-        ├── defaults
         ├── files
-        ├── handlers
         ├── tasks
         │   ├── centos_7.yml
         │   └── main.yml
