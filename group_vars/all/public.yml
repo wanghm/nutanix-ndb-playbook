@@ -22,7 +22,7 @@ os_minimum_versions:
 # postgressql_src_url: https://ftp.postgresql.org/pub/source/v14.6/postgresql-14.6.tar.gz
 # postgressql_src_ver: postgresql-14.6
 # src_dir: /usr/local/src
-# postgres_dir: /usr/pgsql-14/
+# pg_home: /usr/pgsql-14/
 
 
 postgressql_src_url: https://ftp.postgresql.org/pub/source/v13.9/postgresql-13.9.tar.gz
