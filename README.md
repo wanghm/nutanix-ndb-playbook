@@ -11,17 +11,19 @@ Ansible playbook to create postgres HA golden image(template VM) for Nutanix NDB
 ├── ansible.cfg
 ├── group_vars
 │   └── all
-│       ├── private.yml # private variables (credential)
-│       └── public.yml  # variables
+│       ├── private.yml  # private variables (credential)
+│       └── public.yml   # variables
 ├── host_vars
-├── inventory    # host IPs
+├── inventory
 ├── ndb-playbook.yml
 └── roles
     └── postgres_ha
         ├── files
+        │   └── rhel8.repo
         ├── tasks
-        │   ├── centos_7.yml
-        │   └── main.yml
+        │   ├── centos7.yml
+        │   ├── main.yml
+        │   └── rhel8.yml
         └── templates
 ```
 
@@ -34,7 +36,7 @@ Configure postgressql_src_url, postgressql_src_ver, src_dir and postgres_dir
 postgressql_src_url: https://ftp.postgresql.org/pub/source/v14.6/postgresql-14.6.tar.gz
 postgressql_src_ver: postgresql-14.6
 src_dir: /usr/local/src
-postgres_dir: /usr/pgsql-14/
+pg_home: /usr/pgsql-14/
 ```
 
 ### 2. Prepare group_vars/private.yml (this file is not in the repository)
