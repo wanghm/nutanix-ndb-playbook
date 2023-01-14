@@ -1,5 +1,5 @@
 ---
-# roles/postgres_ha/tasks/rhel_8.yml
+# roles/postgres_ha/tasks/rhel_8.yml (WIP)
 
 # Prepare DVD repository: need to attach rhel8 ISO to the CDROM at first
 
