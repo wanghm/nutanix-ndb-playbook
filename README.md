@@ -8,14 +8,14 @@ Sample Ansible playbook to setup postgres HA golden image(template VM) for Nutan
 .
 ├── LICENSE
 ├── README.md
-├── ansible.cfg
+├── ansible.cfg          # ansible config file
 ├── group_vars
 │   └── all
 │       ├── private.yml  # private variables (credential)
 │       └── public.yml   # variables
 ├── host_vars
-├── inventory
-├── ndb-playbook.yml
+├── inventory            # inventory file: IPs/hosyname of target servers
+├── ndb-playbook.yml     # playbook
 └── roles
     └── postgres_ha
         ├── files
@@ -68,4 +68,4 @@ or (in case of using encrypt private.yml file)
 ## DISCLAIMER
 
 * This playbook is not for configure postgres HA cluster, only install the required packages and do minimum OS configurations to meet the requirements of NDB postgres HA soft profile.
-* The sample code provided is intended for general use, and is not affiliated with any organization. The code is provided as is, without any guarantees or warranties. The use of the code is at the user's own risk, and the author(s) of the code do not accept any liability for any damages or losses resulting from its use. [MIT License](/LICENSE)
+* The sample code provided is intended for general use, and is not affiliated with any organization. The code is provided as is, without any guarantees or warranties. The use of the code is at the user's own risk, and the author(s) of the code do not accept any liability for any damages or losses resulting from its use. [MIT license](/LICENSE)
