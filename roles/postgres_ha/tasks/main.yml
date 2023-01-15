@@ -73,6 +73,14 @@
 - name: make install-world postgresql
   command: chdir={{src_dir}}/{{postgressql_src_ver}} make install-world
 
+- name: disable IPv6
+  copy:
+    content: |
+      "net.ipv6.conf.all.disable_ipv6=1"
+      "net.ipv6.conf.default.disable_ipv6=1"
+    dest:  /etc/sysctl.d/disable_ipv6.conf
+    mode: 0640
+
 - name: Disabling seLinux state
   command: 'sed -i -e "s/^SELINUX=.*/SELINUX=disabled/g" /etc/sysconfig/selinux'
 
@@ -80,4 +88,3 @@
   command: grep SELINUX /etc/sysconfig/selinux
   register: sevalue
 - debug: msg="{{ sevalue.stdout_lines }}"
-
