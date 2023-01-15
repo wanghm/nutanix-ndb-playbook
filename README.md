@@ -14,7 +14,7 @@ Sample Ansible playbook to setup postgres HA golden image(template VM) for Nutan
 │       ├── private.yml  # private variables (credential)
 │       └── public.yml   # variables
 ├── host_vars
-├── inventory            # inventory file: IPs/hosyname of target servers
+├── inventory            # inventory file: IP/hostname
 ├── ndb-playbook.yml     # playbook
 └── roles
     └── postgres_ha
@@ -59,11 +59,11 @@ You can encrypt this file by ansible-vault:
 
 ### 3.Run playbook
 
-``` ansible-playbook -i inventory ndb-playbook.yml```
+```ansible-playbook -i inventory ndb-playbook.yml```
 
 or (in case of using encrypt private.yml file)
 
-``` ansible-playbook -i inventory ndb-playbook.yml --ask-vault-pass```
+```ansible-playbook -i inventory ndb-playbook.yml --ask-vault-pass```
 
 ## DISCLAIMER
 
