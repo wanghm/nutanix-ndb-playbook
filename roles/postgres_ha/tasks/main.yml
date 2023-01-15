@@ -82,9 +82,9 @@
     mode: 0640
 
 - name: Disabling seLinux state
-  command: 'sed -i -e "s/^SELINUX=.*/SELINUX=disabled/g" /etc/sysconfig/selinux'
+  command: 'sed -i -e "s/^SELINUX=.*/SELINUX=disabled/g" /etc/selinux/config'
 
 - name: Print the changes in seLinux Configurtion file 
-  command: grep SELINUX /etc/sysconfig/selinux
+  command: grep SELINUX /etc/selinux/config
   register: sevalue
 - debug: msg="{{ sevalue.stdout_lines }}"
