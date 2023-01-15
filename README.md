@@ -67,5 +67,5 @@ or (in case of using encrypt private.yml file)
 
 ## DISCLAIMER
 
-* This playbook is not for configure postgres HA cluster, only install the required packages and do minimum OS configurations
+* This playbook is not for configure postgres HA cluster, only install the required packages and do minimum OS configurations to meet the requirements of NDB postgres HA soft profile.
 * The sample code provided is intended for general use, and is not affiliated with any organization. The code is provided as is, without any guarantees or warranties. The use of the code is at the user's own risk, and the author(s) of the code do not accept any liability for any damages or losses resulting from its use. [MIT License](/LICENSE)
