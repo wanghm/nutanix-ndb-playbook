@@ -1,6 +1,6 @@
 # nutanix-ndb-playbook
 
-Ansible playbook to create postgres HA golden image(template VM) for Nutanix NDB
+Sample Ansible playbook to setup postgres HA golden image(template VM) for Nutanix NDB
 
 ## Directory Structure
 
@@ -27,7 +27,7 @@ Ansible playbook to create postgres HA golden image(template VM) for Nutanix NDB
         └── templates
 ```
 
-## How to use this playbook
+## How to use
 ### 1. Prepare group_vars/public.yml
 
 Configure postgressql_src_url, postgressql_src_ver, src_dir and postgres_dir
@@ -64,3 +64,8 @@ You can encrypt this file by ansible-vault:
 or (in case of using encrypt private.yml file)
 
 ``` ansible-playbook -i inventory ndb-playbook.yml --ask-vault-pass```
+
+## DISCLAIMER
+
+* This playbook is not for configure postgres HA cluster, only install the required packages and do minimum OS configurations
+* The sample code provided is intended for general use, and is not affiliated with any organization. The code is provided as is, without any guarantees or warranties. The use of the code is at the user's own risk, and the author(s) of the code do not accept any liability for any damages or losses resulting from its use. [MIT License](/LICENSE)
