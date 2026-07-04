@@ -1,14 +1,67 @@
 ---
-# roles/postgres_ha/tasks/rhel_8.yml (WIP)
+- name: Set RHEL 8 specific HA variables
+  ansible.builtin.set_fact:
+    postgres_ha_python3_cmd: python3.11
+    postgres_ha_pip_executable: pip3.11
+    postgres_ha_patroni_package: "patroni[etcd3]==2.1.1"
+    postgres_ha_haproxy_package: haproxy
+    postgres_ha_keepalived_package: keepalived
+    postgres_ha_firewalld_package: firewalld
+    postgres_ha_etcd_package: etcd
 
-# Prepare DVD repository: need to attach rhel8 ISO to the CDROM at first
+- name: Install dependencies for PostgreSQL 15 on RHEL 8
+  ansible.builtin.dnf:
+    name:
+      - gcc
+      - make
+      - readline-devel
+      - zlib-devel
+      - openssl-devel
+      - libxml2-devel
+      - libyaml-devel
+      - wget
+      - python311
+      - python311-pip
+      - zip
+      - unzip
+      - curl
+      - net-tools
+      - sshpass
+      - rsync
+      - iptables-services
+      - lsof
+      - rpcbind
+      - showmount
+      - "{{ postgres_ha_haproxy_package }}"
+      - "{{ postgres_ha_keepalived_package }}"
+      - "{{ postgres_ha_firewalld_package }}"
+      - "{{ postgres_ha_etcd_package }}"
+    state: present
+    update_cache: true
 
-- name: mount rhel8 CDROM
-  command: "mount -t iso9660 -o ro /dev/cdrom /mnt"
+- name: Upgrade setuptools
+  ansible.builtin.pip:
+    name: setuptools
+    executable: pip3.11
+    state: present
+    extra_args: --upgrade
 
-- name: copy rhel8 repo file
-  copy:
-    src: ../files/rhel8.repo
-    dst: /etc/yum.repos.d/rhel8.repo
-    mode: 0644
+- name: Upgrade pip
+  ansible.builtin.pip:
+    name: pip
+    executable: pip3.11
+    state: present
+    extra_args: --upgrade
 
+- name: Get Python3 pip version
+  ansible.builtin.command:
+    cmd: python3.11 -m pip --version
+  register: postgres_ha_pip3_info
+  changed_when: false
+
+- name: Show Python3 pip version
+  ansible.builtin.debug:
+    var: postgres_ha_pip3_info.stdout_lines
+
+- name: Include HA common tasks for RHEL 8
+  ansible.builtin.include_tasks: ha_common.yml
