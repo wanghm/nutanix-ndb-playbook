@@ -12,7 +12,7 @@ os_valid_distributions:
 
 os_minimum_versions:
   RedHat: 8
-  CentOS: 8
+  CentOS: 7
   Rocky: 8
 #  OracleLinux: 7
 #  Ubuntu: 18.04
