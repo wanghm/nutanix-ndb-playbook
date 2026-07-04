@@ -1,51 +1,23 @@
 ---
-# roles/postgres_ha/tasks/centos_7.yml
+# roles/postgres_ha/tasks/centos7.yml
 
-- name: yum update
-  yum:
-    name: '*'
-    state: latest
+- name: Set CentOS 7 specific HA variables
+  ansible.builtin.set_fact:
+    postgres_ha_python3_cmd: python3
+    postgres_ha_pip_executable: python3
+    postgres_ha_patroni_package: "patroni[etcd]==2.1.1"
+    postgres_ha_haproxy_package: "haproxy*1.5*"
+    postgres_ha_keepalived_package: keepalived
+    postgres_ha_firewalld_package: firewalld
+    postgres_ha_etcd_package: etcd-3.3.11
 
-- name: add /etc/yum.repos.d/epel.repo
-  yum:
-    name: epel-release
-    state: present
-
-- name: install python36, python3-devel
-  yum:
+- name: Install CentOS 7 base packages
+  ansible.builtin.package:
     name:
+      - epel-release
       - python36
       - python3-devel
-    state: latest
-
-- name: pip3 install
-  yum:
-    name: python3-pip
-    state: latest
-
-- name: Update setuptools package
-  command: "python3 -m pip install setuptools"
-#  pip:
-#    name: setuptools
-#    state: latest
-#    executable: python3 -m pip
-
-- name: Upgrade pip package
-  command: "python3 -m pip install --upgrade pip"
-#  pip:
-#    name: pip
-#    state: latest
-#    executable: python3 -m pip
-#    version: latest
-
-- name: show python3 pip version
-  command: "python3 -m pip --version"
-  register: pip3_info
-- debug: msg="{{ pip3_info.stdout_lines }}"
-
-- name: Install dependency packages
-  yum:
-    name:
+      - python3-pip
       - wget
       - zip
       - unzip
@@ -60,90 +32,42 @@
       - zlib-devel
       - rpcbind
       - showmount
-    state: latest
-  
-- name: Install HAProxy
-  yum:
-    name: ["haproxy*1.5*"]
+      - "{{ postgres_ha_haproxy_package }}"
+      - "{{ postgres_ha_keepalived_package }}"
+      - "{{ postgres_ha_firewalld_package }}"
+      - "{{ postgres_ha_etcd_package }}"
     state: present
+    update_cache: true
 
-# - name: Install upgrade setuptools
-#  command: "python3 -m pip install -U setuptools"
-#  ignore_errors: true
-
-- name: Install Patroni Dependencies1
-  command: "python3 -m pip install urllib3==1.24.2"
-  
-- name: Install Patroni Dependencies2
-  command: "python3 -m pip install psycopg2-binary==2.8.6"
-#  pip:
-#    name:
-#      - urllib3==1.24.2
-#      - psycopg2-binary==2.8.6
-#    executable: pip3
-#    state: present
-
-- name: Install Patroni
-  command: "python3 -m pip install patroni[etcd]==2.1.1"
-#  pip:
-#    name: patroni[etcd]==2.1.1
-#    executable: pip3
-#    state: present
-
-- name: create symbolic link for patroni
-  file:
-    src: /usr/local/bin/patroni
-    dest: /usr/bin/patroni
-    state: link
-- name: create symbolic link for patronictl
-  file:
-    src: /usr/local/bin/patronictl
-    dest: /usr/bin/patronictl
-    state: link
-
-- name: Show patroni Info
-  command: python3 -m pip show patroni
-  register: patroni_info
-- debug: msg="{{ patroni_info.stdout_lines }}"
-
-- name: etcd installation
-  command: "python3 -m pip install etcd3==0.10.0"
-
-- name: show etcd3
-  command: "python3 -m pip show etcd3"
-  register: etcd3_info
-- debug: msg="{{ etcd3_info.stdout_lines }}"
-#  pip:
-#    name: etcd3==0.10.0
-#    executable: pip3
-#    state: present
-
-- name: etcd installation by yum
-  yum:
-    name: etcd-3.3.11
+- name: Upgrade setuptools
+  ansible.builtin.pip:
+    name: setuptools
+    executable: python3
     state: present
+    extra_args: --upgrade
 
-- name: check etcd version 
-  command: "etcd --version"
-  register: etcd_version
-- debug: msg="{{ etcd_version.stdout_lines }}"
+- name: Upgrade pip
+  ansible.builtin.pip:
+    name: pip
+    executable: python3
+    state: present
+    extra_args: --upgrade
 
-- name: Start service iptables if not started
-  service:
+- name: Get Python3 pip version
+  ansible.builtin.command:
+    cmd: python3 -m pip --version
+  register: postgres_ha_pip3_info
+  changed_when: false
+
+- name: Show Python3 pip version
+  ansible.builtin.debug:
+    var: postgres_ha_pip3_info.stdout_lines
+
+- name: Start iptables service on CentOS 7
+  ansible.builtin.service:
     name: iptables
     state: started
+    enabled: true
 
-- name: Install Keepalived
-  yum:
-    name: keepalived
-    state: latest
-
-- name: check keepalived version 
-  command: "keepalived --version"
-  register: keepalived_version
-- debug: msg="{{ keepalived_version.stdout_lines }}"
-
-- name: Install Firewalld
-  yum:
-    name: firewalld
-    state: latest
+- name: Include HA common tasks for CentOS 7
+  ansible.builtin.include_tasks: ha_common.yml

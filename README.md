@@ -31,12 +31,11 @@ Sample Ansible playbook to setup postgres HA golden image(template VM) for Nutan
 ### 1. Prepare group_vars/public.yml
 
 Configure postgressql_src_url, postgressql_src_ver, src_dir and postgres_dir
-
 ```
-postgressql_src_url: https://ftp.postgresql.org/pub/source/v14.6/postgresql-14.6.tar.gz
-postgressql_src_ver: postgresql-14.6
-src_dir: /usr/local/src
-pg_home: /usr/pgsql-14/
+Configure for PostgreSQL 15:
+- postgressql_src_url: https://ftp.postgresql.org/pub/source/v15.3/postgresql-15.3.tar.gz
+- postgressql_src_ver: postgresql-15.3
+- pg_home: /usr/pgsql-15/
 ```
 
 ### 2. Prepare group_vars/private.yml (this file is not in the repository)

@@ -3,12 +3,12 @@
 
 # OS common settings
 - name: Create OS group postgres
-  group:
+  ansible.builtin.group:
     name: postgres
     state: present
 
 - name: Create OS user postgres
-  user:
+  ansible.builtin.user:
     name: postgres
     password: "{{ postgres_user_password }}"
     home: /home/postgres
@@ -16,12 +16,12 @@
     state: present
 
 - name: Create OS group era
-  group:
+  ansible.builtin.group:
     name: era
     state: present
 
 - name: Create OS user era
-  user:
+  ansible.builtin.user:
     name: era
     password: "{{ era_user_password }}"
     home: /home/era
@@ -29,62 +29,101 @@
     state: present
 
 - name: Enable passwordless sudo for era
-  copy:
+  ansible.builtin.copy:
     content: "era ALL=(ALL:ALL) NOPASSWD:ALL"
     dest: /etc/sudoers.d/era_nopasswd
-    mode: 0440
+    mode: '0440'
+    validate: 'visudo -cf %s'
 
-# rhel7/centos7 specific tasks
-- include: centos7.yml
+- name: Include CentOS7 specific tasks
+  ansible.builtin.include_tasks: centos7.yml
   when:
-   - ansible_distribution in ["RedHat","CentOS"]
-   - ansible_distribution_major_version == "7"
+    - ansible_distribution in ["RedHat","CentOS"]
+    - ansible_distribution_major_version == "7"
 
-# rhel8 soecific tasks
-- include: rhel8.yml
+- name: Include RHEL8 specific tasks
+  ansible.builtin.include_tasks: rhel8.yml
   when:
-   - ansible_distribution == "RedHat"
-   - ansible_distribution_major_version == "8"
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version == "8"
 
 # Install postgresql from source
-- name: download postgresql packages
-  get_url:
-    url: "{{ postgressql_src_url }}"
+- name: Download PostgreSQL packages
+  ansible.builtin.get_url:
+    url: "{{ postgresql_src_url }}"
+    dest: "{{ src_dir }}/{{ postgresql_src_ver }}.tar.gz"
+    mode: '0644'
+
+- name: Extract PostgreSQL source
+  ansible.builtin.unarchive:
+    src: "{{ src_dir }}/{{ postgresql_src_ver }}.tar.gz"
     dest: "{{ src_dir }}"
+    remote_src: true
+    owner: postgres
+    group: postgres
 
-- name: extract postgresql src
-  command: chdir={{ src_dir }} tar xzvf "{{ postgressql_src_ver }}.tar.gz"
+- name: Configure PostgreSQL
+  ansible.builtin.command:
+    cmd: ./configure --prefix={{ pg_home }}
+    chdir: "{{ src_dir }}/{{ postgresql_src_ver }}"
+  args:
+    creates: "{{ src_dir }}/{{ postgresql_src_ver }}/config.status"
 
-- name: configure postgresql
-  command: chdir={{src_dir}}/{{postgressql_src_ver}} ./configure --prefix={{ pg_home }}
+- name: Build PostgreSQL
+  ansible.builtin.command:
+    cmd: make
+    chdir: "{{ src_dir }}/{{ postgresql_src_ver }}"
+  args:
+    creates: "{{ src_dir }}/{{ postgresql_src_ver }}/src/backend/postgres"
 
-- name: make postgresql
-  command: chdir={{src_dir}}/{{postgressql_src_ver}} make
+- name: Build all PostgreSQL targets
+  ansible.builtin.command:
+    cmd: make all
+    chdir: "{{ src_dir }}/{{ postgresql_src_ver }}"
+  args:
+    creates: "{{ src_dir }}/{{ postgresql_src_ver }}/src/backend/postgres"
 
-- name: make all postgresql
-  command: chdir={{src_dir}}/{{postgressql_src_ver}} make all
+- name: Build PostgreSQL world
+  ansible.builtin.command:
+    cmd: make world
+    chdir: "{{ src_dir }}/{{ postgresql_src_ver }}"
+  args:
+    creates: "{{ src_dir }}/{{ postgresql_src_ver }}/src/backend/postgres"
 
-- name: make world postgresql
-  command: chdir={{src_dir}}/{{postgressql_src_ver}} make world
+- name: Install PostgreSQL
+  ansible.builtin.command:
+    cmd: make install
+    chdir: "{{ src_dir }}/{{ postgresql_src_ver }}"
+  args:
+    creates: "{{ pg_home }}/bin/postgres"
 
-- name: make install postgresql
-  command: chdir={{src_dir}}/{{postgressql_src_ver}} make install
+- name: Install PostgreSQL world
+  ansible.builtin.command:
+    cmd: make install-world
+    chdir: "{{ src_dir }}/{{ postgresql_src_ver }}"
+  args:
+    creates: "{{ pg_home }}/bin/postgres"
 
-- name: make install-world postgresql
-  command: chdir={{src_dir}}/{{postgressql_src_ver}} make install-world
-
-- name: disable IPv6
-  copy:
+- name: Disable IPv6
+  ansible.builtin.copy:
     content: |
       net.ipv6.conf.all.disable_ipv6=1
       net.ipv6.conf.default.disable_ipv6=1
-    dest:  /etc/sysctl.d/disable_ipv6.conf
-    mode: 0640
+    dest: /etc/sysctl.d/disable_ipv6.conf
+    mode: '0640'
 
-- name: Disabling seLinux state
-  command: 'sed -i -e "s/^SELINUX=.*/SELINUX=disabled/g" /etc/selinux/config'
+- name: Disable SELinux in config
+  ansible.builtin.replace:
+    path: /etc/selinux/config
+    regexp: '^SELINUX='
+    replace: 'SELINUX=disabled'
 
-- name: Print the changes in seLinux Configurtion file 
-  command: grep SELINUX /etc/selinux/config
-  register: sevalue
-- debug: msg="{{ sevalue.stdout_lines }}"
+- name: Print the changes in SELinux configuration file
+  ansible.builtin.command:
+    cmd: grep SELINUX /etc/selinux/config
+  register: postgres_ha_sevalue
+  changed_when: false
+
+- name: Debug SELinux config output
+  ansible.builtin.debug:
+    var: postgres_ha_sevalue.stdout_lines

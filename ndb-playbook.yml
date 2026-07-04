@@ -8,13 +8,13 @@
     - postgres_ha
 
   tasks:
-    - name: reboot remote server
-      reboot:
+    - name: Reboot remote server
+      ansible.builtin.reboot:
         reboot_timeout: 300
         msg: "Reboot triggered by Ansible"
 
     - name: Wait for the remote host to come back online
-      wait_for:
+      ansible.builtin.wait_for:
         host: "{{ inventory_hostname }}"
         port: 22
         state: started
