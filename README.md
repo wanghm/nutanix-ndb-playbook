@@ -22,6 +22,7 @@ Sample Ansible playbook to setup postgres HA golden image(template VM) for Nutan
         │   └── rhel8.repo
         ├── tasks
         │   ├── centos7.yml
+        |   ├── ha_common.yml
         │   ├── main.yml
         │   └── rhel8.yml
         └── templates
