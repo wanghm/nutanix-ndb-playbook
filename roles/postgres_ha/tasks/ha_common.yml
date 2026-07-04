@@ -1,0 +1,79 @@
+---
+- name: Create application and binary directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: postgres
+    group: postgres
+    mode: '0755'
+  loop:
+    - /app
+    - "{{ pg_home }}"
+
+- name: Install Patroni dependencies
+  ansible.builtin.pip:
+    name:
+      - urllib3==1.24.2
+      - psycopg2-binary==2.8.6
+    executable: "{{ postgres_ha_pip_executable }}"
+    state: present
+
+- name: Install Patroni for HA
+  ansible.builtin.pip:
+    name: "{{ postgres_ha_patroni_package }}"
+    executable: "{{ postgres_ha_pip_executable }}"
+    state: present
+
+- name: Create symbolic link for patroni
+  ansible.builtin.file:
+    src: /usr/local/bin/patroni
+    dest: /usr/bin/patroni
+    state: link
+
+- name: Create symbolic link for patronictl
+  ansible.builtin.file:
+    src: /usr/local/bin/patronictl
+    dest: /usr/bin/patronictl
+    state: link
+
+- name: Get Patroni package info
+  ansible.builtin.command:
+    cmd: "{{ python3_cmd }} -m pip show patroni"
+  register: postgres_ha_patroni_info
+  changed_when: false
+
+- name: Print Patroni package info
+  ansible.builtin.debug:
+    var: postgres_ha_patroni_info.stdout_lines
+
+- name: Install etcd3 Python package
+  ansible.builtin.pip:
+    name: etcd3==0.10.0
+    executable: "{{ pip_executable }}"
+    state: present
+
+- name: Get etcd3 package info
+  ansible.builtin.command:
+    cmd: "{{ python3_cmd }} -m pip show etcd3"
+  register: postgres_ha_etcd3_info
+  changed_when: false
+
+- name: Print etcd3 package info
+  ansible.builtin.debug:
+    var: postgres_ha_etcd3_info.stdout_lines
+
+- name: Check etcd version
+  ansible.builtin.command:
+    cmd: etcd --version
+  register: postgres_ha_etcd_version
+  changed_when: false
+
+- name: Print etcd version
+  ansible.builtin.debug:
+    var: postgres_ha_etcd_version.stdout_lines
+
+- name: Enable and start firewalld
+  ansible.builtin.service:
+    name: firewalld
+    state: started
+    enabled: true
