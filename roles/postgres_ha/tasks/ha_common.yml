@@ -38,7 +38,7 @@
 
 - name: Get Patroni package info
   ansible.builtin.command:
-    cmd: "{{ python3_cmd }} -m pip show patroni"
+    cmd: "{{ postgres_ha_python3_cmd }} -m pip show patroni"
   register: postgres_ha_patroni_info
   changed_when: false
 
@@ -49,12 +49,12 @@
 - name: Install etcd3 Python package
   ansible.builtin.pip:
     name: etcd3==0.10.0
-    executable: "{{ pip_executable }}"
+    executable: "{{ postgres_ha_pip_executable }}"
     state: present
 
 - name: Get etcd3 package info
   ansible.builtin.command:
-    cmd: "{{ python3_cmd }} -m pip show etcd3"
+    cmd: "{{ postgres_ha_python3_cmd }} -m pip show etcd3"
   register: postgres_ha_etcd3_info
   changed_when: false
 
