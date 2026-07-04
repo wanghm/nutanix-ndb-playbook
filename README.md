@@ -57,13 +57,32 @@ You can encrypt this file by ansible-vault:
 ```ansible-vault encrypt group_vars/private.yml```
 
 
-### 3.Run playbook
+### 3. Run playbook
 
-```ansible-playbook -i inventory ndb-playbook.yml```
+```bash
+ansible-playbook -i inventory ndb-playbook.yml
+```
 
-or (in case of using encrypt private.yml file)
+or (in case of using encrypted private.yml file)
 
-```ansible-playbook -i inventory ndb-playbook.yml --ask-vault-pass```
+```bash
+ansible-playbook -i inventory ndb-playbook.yml --ask-vault-pass
+```
+
+### 4. Validate before running
+
+Use `--check` to run a dry run and verify tasks without making changes:
+
+```bash
+ansible-playbook -i inventory ndb-playbook.yml --check
+```
+
+Use `ansible-lint` to validate role and playbook syntax and best practices:
+
+```bash
+ansible-lint ndb-playbook.yml
+ansible-lint roles/postgres_ha/tasks/centos7.yml roles/postgres_ha/tasks/rhel8.yml roles/postgres_ha/tasks/ha_common.yml
+```
 
 ## DISCLAIMER
 
